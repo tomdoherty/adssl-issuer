@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+data:
+  password: U2VjdXJlUGFzc3dvcmQ=
+kind: Secret
+metadata:
+  name: adsslissuer-secret
+type: Opaque
+
+---
+apiVersion: certmanager.tomdoherty.io/v1alpha2
+kind: AdsslIssuer
+metadata:
+  name: adsslissuer-sample
+spec:
+  url: adssl.example.com
+  user: tom
+  passwordRef:
+    name: adsslissuer-secret
+    key: password

@@ -1,0 +1,7 @@
+domain: tomdoherty.io
+repo: github.com/tomdoherty/adssl-issuer
+resources:
+- group: certmanager
+  kind: AdsslIssuer
+  version: v1alpha2
+version: "2"

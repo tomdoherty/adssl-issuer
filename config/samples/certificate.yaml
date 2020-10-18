@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: kafka-tls
+spec:
+  # The secret name to store the signed certificate
+  secretName: kafka-tls-secret
+  # Common Name
+  commonName: kafka
+  # DNS SAN
+  dnsNames:
+    - kafka-0
+  # IP Address SAN
+  ipAddresses:
+    - "127.0.0.1"
+  # Duration of the certificate
+  duration: 24h
+  # Renew 8 hours before the certificate expiration
+  renewBefore: 8h
+  # The reference to the AdsslIssuer
+  issuerRef:
+    group: certmanager.tomdoherty.io
+    kind: CertificateRequest
+    name: adsslissuer-sample
