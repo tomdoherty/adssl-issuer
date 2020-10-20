@@ -28,7 +28,7 @@ kind: AdsslIssuer
 metadata:
   name: adsslissuer-sample
 spec:
-  url: adssl.example.com
+  url: https://adssl.example.com
   user: tom
   passwordRef:
     name: adsslissuer-secret
