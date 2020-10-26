@@ -84,13 +84,6 @@ func (r *CertificateRequestReconciler) Reconcile(req ctrl.Request) (ctrl.Result,
 		_ = r.setStatus(ctx, cr, cmmeta.ConditionFalse, cmapi.CertificateRequestReasonPending, "Failed to retrieve AdsslIssuer resource %s: %v", issNamespaceName, err)
 		return ctrl.Result{}, err
 	}
-	// Check if the AdsslIssuer resource has been marked Ready
-	if !adsslIssuerHasCondition(iss, api.AdsslIssuerCondition{Type: api.ConditionReady, Status: api.ConditionTrue}) {
-		err := fmt.Errorf("resource %s is not ready", issNamespaceName)
-		log.Error(err, "failed to retrieve AdsslIssuer resource", "namespace", req.Namespace, "name", cr.Spec.IssuerRef.Name)
-		_ = r.setStatus(ctx, cr, cmmeta.ConditionFalse, cmapi.CertificateRequestReasonPending, "AdsslIssuer resource %s is not Ready", issNamespaceName)
-		return ctrl.Result{}, err
-	}
 
 	var secret core.Secret
 	secretNamespaceName := types.NamespacedName{
@@ -136,21 +129,6 @@ func (r *CertificateRequestReconciler) SetupWithManager(mgr ctrl.Manager) error 
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&cmapi.CertificateRequest{}).
 		Complete(r)
-}
-
-// adsslIssuerHasCondition will return true if the given AdsslIssuer resource has
-// a condition matching the provided AdsslIssuerCondition. Only the Type and
-// Status field will be used in the comparison, meaning that this function will
-// return 'true' even if the Reason, Message and LastTransitionTime fields do
-// not match.
-func adsslIssuerHasCondition(iss api.AdsslIssuer, c api.AdsslIssuerCondition) bool {
-	existingConditions := iss.Status.Conditions
-	for _, cond := range existingConditions {
-		if c.Type == cond.Type && c.Status == cond.Status {
-			return true
-		}
-	}
-	return false
 }
 
 func (r *CertificateRequestReconciler) setStatus(ctx context.Context, cr *cmapi.CertificateRequest, status cmmeta.ConditionStatus, reason, message string, args ...interface{}) error {

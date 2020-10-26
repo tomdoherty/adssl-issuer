@@ -64,10 +64,9 @@ func (r *AdsslIssuerReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error)
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	statusReconciler := newAdsslStatusReconciler(r, iss, log)
 	log.Info("Registered issuer")
 
-	return ctrl.Result{}, statusReconciler.Update(ctx, api.ConditionTrue, "Verified", "AdsslIssuer verified and ready to sign certificates")
+	return ctrl.Result{}, nil
 }
 
 // SetupWithManager initializes the AdsslIssuer controller into the
